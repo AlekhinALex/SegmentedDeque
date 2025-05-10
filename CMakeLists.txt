@@ -21,7 +21,6 @@ add_executable(tests
     ${TEST_SOURCE}
     ${HEADERS}
     ${IMPLEMENTATIONS}
-    # ${TEST_HEADERS}
 )
 
 target_link_libraries(tests GTest::GTest GTest::Main pthread)

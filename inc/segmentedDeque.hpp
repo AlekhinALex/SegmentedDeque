@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "sequence.hpp"
 #include "arraySequence.hpp"
 #include "listSequence.hpp"
@@ -10,7 +8,8 @@ template <typename T>
 class SegmentedDeque : public Sequence<T>
 {
 private:
-    ListSequence<std::unique_ptr<ArraySequence<T>>> *segments;
+    // Using a ListSequence of ArraySequence pointers instead of unique_ptr
+    ListSequence<ArraySequence<T>*> *segments;
     int segmentSize;
     int totalSize;
 
@@ -19,30 +18,30 @@ public:
     SegmentedDeque(const SegmentedDeque<T> &other);
     ~SegmentedDeque();
 
-    T &getFirst();
-    T &getLast();
-    T &get(const int index);
+    T &getFirst() override;
+    T &getLast() override;
+    T &get(const int index) override;
 
-    const T &getFirst() const;
-    const T &getLast() const;
-    const T &get(const int index) const;
+    const T &getFirst() const override;
+    const T &getLast() const override;
+    const T &get(const int index) const override;
 
-    void append(const T &item);
-    void prepend(const T &item);
-    void insertAt(const T &item, const int index);
-    void set(const int index, const T &data);
-    void concat(const SegmentedDeque<T> *other);
+    void append(const T &item) override;
+    void prepend(const T &item) override;
+    void insertAt(const T &item, const int index) override;
+    void set(const int index, const T &data) override;
+    void concat(const Sequence<T> *other) override;
 
-    int getLength() const;
+    int getLength() const override;
 
-    SegmentedDeque<T> *getSubsequence(const int startIndex, const int endIndex) const;
-    SegmentedDeque<T> *appendImmutable(const T &item) const;
-    SegmentedDeque<T> *prependImmutable(const T &item) const;
-    SegmentedDeque<T> *insertAtImmutable(const T &item, const int index) const;
-    SegmentedDeque<T> *setImmutable(const int index, const T &data) const;
-    SegmentedDeque<T> *concatImmutable(const SegmentedDeque<T> *other) const;
+    Sequence<T> *getSubsequence(const int startIndex, const int endIndex) const override;
+    Sequence<T> *appendImmutable(const T &item) const override;
+    Sequence<T> *prependImmutable(const T &item) const override;
+    Sequence<T> *insertAtImmutable(const T &item, const int index) const override;
+    Sequence<T> *setImmutable(const int index, const T &data) const override;
+    Sequence<T> *concatImmutable(const Sequence<T> *other) const override;
 
-    void print() const;
+    void print() const override;
 };
 
 #include "../impl/segmentedDeque.tpp"

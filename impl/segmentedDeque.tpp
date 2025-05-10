@@ -2,38 +2,44 @@
 
 #include "../inc/segmentedDeque.hpp"
 
-// TODO: make Empty Check as func
-
 template <typename T>
 SegmentedDeque<T>::SegmentedDeque(int segmentSize)
     : segmentSize(segmentSize), totalSize(0)
 {
-    segments = new ListSequence<std::unique_ptr<ArraySequence<T>>>();
+    if (segmentSize <= 0)
+    {
+        throw std::invalid_argument("Segment size must be positive");
+    }
+    segments = new ListSequence<ArraySequence<T> *>();
 }
 
 template <typename T>
 SegmentedDeque<T>::SegmentedDeque(const SegmentedDeque<T> &other)
     : segmentSize(other.segmentSize), totalSize(other.totalSize)
 {
-    segments = new ListSequence<std::unique_ptr<ArraySequence<T>>>();
+    segments = new ListSequence<ArraySequence<T> *>();
 
     for (int i = 0; i < other.segments->getLength(); i++)
     {
-        auto newSegment = std::make_unique<ArraySequence<T>>();
-        const auto &otherSegment = other.segments->get(i);
+        ArraySequence<T> *newSegment = new ArraySequence<T>();
+        ArraySequence<T> *otherSegment = other.segments->get(i);
 
         for (int j = 0; j < otherSegment->getLength(); j++)
         {
             newSegment->append(otherSegment->get(j));
         }
 
-        segments->append(std::move(newSegment));
+        segments->append(newSegment);
     }
 }
 
 template <typename T>
 SegmentedDeque<T>::~SegmentedDeque()
 {
+    for (int i = 0; i < segments->getLength(); i++)
+    {
+        delete segments->get(i);
+    }
     delete segments;
 }
 
@@ -85,6 +91,11 @@ T &SegmentedDeque<T>::get(int index)
         throw std::out_of_range("Deque is empty");
     }
 
+    if (index < 0 || index >= totalSize)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+
     int segmentIndex = index / segmentSize;
     int segmentPosition = index % segmentSize;
 
@@ -94,6 +105,16 @@ T &SegmentedDeque<T>::get(int index)
 template <typename T>
 const T &SegmentedDeque<T>::get(int index) const
 {
+    if (totalSize == 0)
+    {
+        throw std::out_of_range("Deque is empty");
+    }
+
+    if (index < 0 || index >= totalSize)
+    {
+        throw std::out_of_range("Index out of range");
+    }
+
     int segmentIndex = index / segmentSize;
     int segmentPosition = index % segmentSize;
 
@@ -103,12 +124,9 @@ const T &SegmentedDeque<T>::get(int index) const
 template <typename T>
 void SegmentedDeque<T>::append(const T &item)
 {
-    int segmentNumber = totalSize / segmentSize;
-    int segmentIndex = totalSize % segmentSize;
-
-    if (segments->getLength() == 0 || segmentIndex == 0)
+    if (segments->getLength() == 0 || segments->getLast()->getLength() >= segmentSize)
     {
-        segments->append(std::make_unique<ArraySequence<T>>(segmentSize));
+        segments->append(new ArraySequence<T>());
     }
 
     segments->getLast()->append(item);
@@ -118,12 +136,9 @@ void SegmentedDeque<T>::append(const T &item)
 template <typename T>
 void SegmentedDeque<T>::prepend(const T &item)
 {
-    int segmentNumber = totalSize / segmentSize;
-    int segmentIndex = totalSize % segmentSize;
-
-    if (segments->getLength() == 0 || segmentIndex == 0)
+    if (segments->getLength() == 0 || segments->getFirst()->getLength() >= segmentSize)
     {
-        segments->prepend(std::make_unique<ArraySequence<T>>(segmentSize));
+        segments->prepend(new ArraySequence<T>());
     }
 
     segments->getFirst()->prepend(item);
@@ -165,14 +180,14 @@ void SegmentedDeque<T>::set(const int index, const T &data)
         throw std::out_of_range("Index is out of range");
     }
 
-    int segmentNumber = index / segmentSize;
-    int segmentIndex = index % segmentSize;
+    int segmentIndex = index / segmentSize;
+    int segmentPosition = index % segmentSize;
 
-    segments->get(segmentNumber)->set(segmentIndex, data);
+    segments->get(segmentIndex)->set(segmentPosition, data);
 }
 
 template <typename T>
-void SegmentedDeque<T>::concat(const SegmentedDeque<T> *other)
+void SegmentedDeque<T>::concat(const Sequence<T> *other)
 {
     if (!other)
     {
@@ -192,15 +207,77 @@ int SegmentedDeque<T>::getLength() const
 }
 
 template <typename T>
+Sequence<T> *SegmentedDeque<T>::getSubsequence(const int startIndex, const int endIndex) const
+{
+    int size = getLength();
+    if (startIndex < 0 || startIndex >= size ||
+        endIndex < 0 || endIndex >= size ||
+        startIndex > endIndex)
+    {
+        throw std::out_of_range("Invalid index range");
+    }
+
+    auto *newDq = new SegmentedDeque<T>(segmentSize);
+
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        newDq->append(get(i));
+    }
+
+    return newDq;
+}
+
+template <typename T>
+Sequence<T> *SegmentedDeque<T>::appendImmutable(const T &item) const
+{
+    auto *newDq = new SegmentedDeque<T>(*this);
+    newDq->append(item);
+    return newDq;
+}
+
+template <typename T>
+Sequence<T> *SegmentedDeque<T>::prependImmutable(const T &item) const
+{
+    auto *newDq = new SegmentedDeque<T>(*this);
+    newDq->prepend(item);
+    return newDq;
+}
+
+template <typename T>
+Sequence<T> *SegmentedDeque<T>::insertAtImmutable(const T &item, const int index) const
+{
+    auto *newDq = new SegmentedDeque<T>(*this);
+    newDq->insertAt(item, index);
+    return newDq;
+}
+
+template <typename T>
+Sequence<T> *SegmentedDeque<T>::setImmutable(const int index, const T &data) const
+{
+    auto *newDq = new SegmentedDeque<T>(*this);
+    newDq->set(index, data);
+    return newDq;
+}
+
+template <typename T>
+Sequence<T> *SegmentedDeque<T>::concatImmutable(const Sequence<T> *other) const
+{
+    auto *newDq = new SegmentedDeque<T>(*this);
+    newDq->concat(other);
+    return newDq;
+}
+
+template <typename T>
 void SegmentedDeque<T>::print() const
 {
     if (totalSize == 0)
     {
         std::cout << "Empty";
+        return;
     }
 
-    for (const auto &segment : *segments)
+    for (int i = 0; i < segments->getLength(); i++)
     {
-        segment->print();
+        segments->get(i)->print();
     }
 }
