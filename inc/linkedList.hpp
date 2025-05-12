@@ -8,7 +8,8 @@ private:
     {
         T value;
         Node *next;
-        Node(const T &value) : value(value), next(nullptr) {}
+        Node *prev;
+        Node(const T &value) : value(value), next(nullptr), prev(nullptr) {}
     };
     Node *head;
     int length;
@@ -28,7 +29,7 @@ public:
         bool operator==(const Iterator &other) const;
         void insert(const T &item);
         void erase();
-        bool notEnd();
+        bool notEnd() const;
     };
 
     /// @brief ConstIterator section
@@ -36,7 +37,7 @@ public:
     {
     public:
         const Node *current;
-        
+
         ConstIterator(const Node *nodePtr);
         ConstIterator &operator++();
         ConstIterator operator++(int);

@@ -59,7 +59,7 @@ void LinkedList<T>::Iterator::erase()
 }
 
 template <typename T>
-bool LinkedList<T>::Iterator::notEnd()
+bool LinkedList<T>::Iterator::notEnd() const
 {
     return current != nullptr;
 }
@@ -196,6 +196,7 @@ void LinkedList<T>::append(const T &item)
         {
             ++it;
         }
+        newNode->prev = it.current;
         it.current->next = newNode;
     }
 
@@ -207,6 +208,10 @@ void LinkedList<T>::prepend(const T &item)
 {
     Node *newNode = new Node(item);
     newNode->next = head;
+    if (head)
+    {
+        head->prev = newNode;
+    }
     head = newNode;
     length++;
 }
@@ -338,8 +343,10 @@ void LinkedList<T>::insertAt(const T &value, const int index)
     }
 
     Node *newNode = new Node(value);
-    newNode->next = it.current->next;
-    it.current->next = newNode;
+    newNode->prev = it.current->prev;
+    newNode->next = it.current;
+    it.current->prev->next = newNode;
+    it.current->prev = newNode;
     length++;
 }
 

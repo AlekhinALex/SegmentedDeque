@@ -8,8 +8,7 @@ template <typename T>
 class SegmentedDeque : public Sequence<T>
 {
 private:
-    // Using a ListSequence of ArraySequence pointers instead of unique_ptr
-    ListSequence<ArraySequence<T>*> *segments;
+    ListSequence<ArraySequence<T> *> *segments;
     int segmentSize;
     int totalSize;
 
