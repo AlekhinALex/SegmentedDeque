@@ -196,8 +196,8 @@ void LinkedList<T>::append(const T &item)
         {
             ++it;
         }
-        newNode->prev = it.current;
         it.current->next = newNode;
+        newNode->prev = it.current;
     }
 
     length++;
@@ -337,16 +337,21 @@ void LinkedList<T>::insertAt(const T &value, const int index)
     }
 
     Iterator it = begin();
-    for (int i = 0; i < index - 1; i++)
+    for (int i = 0; i < index; i++)
     {
         ++it;
     }
 
     Node *newNode = new Node(value);
-    newNode->prev = it.current->prev;
     newNode->next = it.current;
-    it.current->prev->next = newNode;
+    newNode->prev = it.current->prev;
+
+    if (it.current->prev)
+    {
+        it.current->prev->next = newNode;
+    }
     it.current->prev = newNode;
+
     length++;
 }
 
