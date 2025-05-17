@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 #include "../inc/segmentedDeque.hpp"
+#include "../types/complex.hpp"
+#include "../types/person.hpp"
+#include <sstream>
 
 class SegmentedDequeTest : public ::testing::Test
 {
 protected:
     void SetUp() override
     {
-        // Default deque with segment size 3 for testing
         deque = new SegmentedDeque<int>(3);
     }
 
@@ -18,7 +20,6 @@ protected:
     SegmentedDeque<int> *deque;
 };
 
-// Constructor tests
 TEST_F(SegmentedDequeTest, ConstructorCreatesEmptyDeque)
 {
     EXPECT_EQ(deque->getLength(), 0);
@@ -30,7 +31,6 @@ TEST_F(SegmentedDequeTest, ConstructorThrowsOnInvalidSegmentSize)
     EXPECT_THROW(SegmentedDeque<int>(0), std::invalid_argument);
 }
 
-// Basic operations
 TEST_F(SegmentedDequeTest, AppendIncreasesSize)
 {
     deque->append(1);
@@ -64,7 +64,7 @@ TEST_F(SegmentedDequeTest, GetWorksCorrectly)
     deque->append(1);
     deque->append(2);
     deque->append(3);
-    deque->append(4); // Should create new segment
+    deque->append(4);
 
     EXPECT_EQ(deque->get(0), 1);
     EXPECT_EQ(deque->get(1), 2);
@@ -72,7 +72,6 @@ TEST_F(SegmentedDequeTest, GetWorksCorrectly)
     EXPECT_EQ(deque->get(3), 4);
 }
 
-// Edge cases
 TEST_F(SegmentedDequeTest, GetFirstThrowsWhenEmpty)
 {
     EXPECT_THROW(deque->getFirst(), std::out_of_range);
@@ -95,14 +94,12 @@ TEST_F(SegmentedDequeTest, GetThrowsOnInvalidIndex)
     EXPECT_THROW(deque->get(1), std::out_of_range);
 }
 
-// Segment creation tests
 TEST_F(SegmentedDequeTest, NewSegmentCreatedWhenFull)
 {
-    // Segment size is 3
     deque->append(1);
     deque->append(2);
     deque->append(3);
-    deque->append(4); // Should create new segment
+    deque->append(4);
 
     EXPECT_EQ(deque->getLength(), 4);
     EXPECT_EQ(deque->get(3), 4);
@@ -110,17 +107,15 @@ TEST_F(SegmentedDequeTest, NewSegmentCreatedWhenFull)
 
 TEST_F(SegmentedDequeTest, NewSegmentCreatedWhenPrependingToFullSegment)
 {
-    // Segment size is 3
     deque->prepend(3);
     deque->prepend(2);
     deque->prepend(1);
-    deque->prepend(0); // Should create new segment
+    deque->prepend(0);
 
     EXPECT_EQ(deque->getLength(), 4);
     EXPECT_EQ(deque->get(0), 0);
 }
 
-// InsertAt tests
 TEST_F(SegmentedDequeTest, InsertAtBeginningIsSameAsPrepend)
 {
     deque->insertAt(1, 0);
@@ -157,7 +152,6 @@ TEST_F(SegmentedDequeTest, InsertAtThrowsOnInvalidIndex)
     EXPECT_THROW(deque->insertAt(1, 1), std::out_of_range);
 }
 
-// Set tests
 TEST_F(SegmentedDequeTest, SetWorksCorrectly)
 {
     deque->append(1);
@@ -175,7 +169,6 @@ TEST_F(SegmentedDequeTest, SetThrowsOnInvalidIndex)
     EXPECT_THROW(deque->set(0, 1), std::out_of_range);
 }
 
-// Copy constructor tests
 TEST_F(SegmentedDequeTest, CopyConstructorCreatesIndependentCopy)
 {
     deque->append(1);
@@ -191,7 +184,6 @@ TEST_F(SegmentedDequeTest, CopyConstructorCreatesIndependentCopy)
     EXPECT_EQ(copy.get(0), 10);
 }
 
-// Concatenation tests
 TEST_F(SegmentedDequeTest, ConcatWorksCorrectly)
 {
     deque->append(1);
@@ -218,7 +210,6 @@ TEST_F(SegmentedDequeTest, ConcatWithNullDoesNothing)
     EXPECT_EQ(deque->getLength(), 1);
 }
 
-// Subsequence tests
 TEST_F(SegmentedDequeTest, GetSubsequenceWorksCorrectly)
 {
     for (int i = 1; i <= 5; i++)
@@ -245,7 +236,6 @@ TEST_F(SegmentedDequeTest, GetSubsequenceThrowsOnInvalidRange)
     EXPECT_THROW(deque->getSubsequence(1, 0), std::out_of_range);
 }
 
-// Immutable operations tests
 TEST_F(SegmentedDequeTest, AppendImmutableCreatesNewDeque)
 {
     deque->append(1);
@@ -270,7 +260,6 @@ TEST_F(SegmentedDequeTest, PrependImmutableCreatesNewDeque)
     delete newDeque;
 }
 
-// Print test (mostly for coverage)
 TEST_F(SegmentedDequeTest, PrintDoesNotThrow)
 {
     EXPECT_NO_THROW(deque->print());
@@ -279,7 +268,6 @@ TEST_F(SegmentedDequeTest, PrintDoesNotThrow)
     EXPECT_NO_THROW(deque->print());
 }
 
-// Test with different segment sizes
 TEST(SegmentedDequeCustomSizeTest, WorksWithDifferentSegmentSizes)
 {
     SegmentedDeque<int> smallSegments(1);
@@ -295,4 +283,152 @@ TEST(SegmentedDequeCustomSizeTest, WorksWithDifferentSegmentSizes)
         largeSegments.append(i);
     }
     EXPECT_EQ(largeSegments.getLength(), 10);
+}
+
+TEST(SegmentedDequeRangeLoopTest, RangeBasedForLoopWorks)
+{
+    SegmentedDeque<int> deque(3);
+    for (int i = 0; i < 5; i++)
+    {
+        deque.append(i);
+    }
+
+    int sum = 0;
+    for (const auto &item : deque)
+    {
+        sum += item;
+    }
+    EXPECT_EQ(sum, 10);
+
+    for (auto &item : deque)
+    {
+        item *= 2;
+    }
+
+    sum = 0;
+    for (const auto &item : deque)
+    {
+        sum += item;
+    }
+    EXPECT_EQ(sum, 20);
+}
+
+TEST(SegmentedDequeComplexTest, WorksWithComplexNumbers)
+{
+    SegmentedDeque<Complex> deque(2);
+    
+    deque.append(Complex(1, 2));
+    deque.append(Complex(3, 4));
+    deque.append(Complex(5, 6));
+    
+    EXPECT_EQ(deque.getLength(), 3);
+    EXPECT_EQ(deque.get(0), Complex(1, 2));
+    EXPECT_EQ(deque.get(1), Complex(3, 4));
+    EXPECT_EQ(deque.get(2), Complex(5, 6));
+    
+    double magnitudeSum = 0;
+    for (const auto &c : deque)
+    {
+        magnitudeSum += c.magnitude();
+    }
+    
+    EXPECT_NEAR(magnitudeSum, 15.05, 0.01);
+    
+    deque.sort(deque.begin(), deque.end());
+    
+    EXPECT_EQ(deque.get(0), Complex(1, 2));
+    EXPECT_EQ(deque.get(1), Complex(3, 4));
+    EXPECT_EQ(deque.get(2), Complex(5, 6));
+}
+
+TEST(SegmentedDequePersonTest, WorksWithPersonObjects)
+{
+    SegmentedDeque<Person> deque(2);
+    
+    deque.append(Person("Alice", 30));
+    deque.append(Person("Bob", 25));
+    deque.append(Person("Charlie", 35));
+    
+    EXPECT_EQ(deque.getLength(), 3);
+    EXPECT_EQ(deque.get(0), Person("Alice", 30));
+    EXPECT_EQ(deque.get(1), Person("Bob", 25));
+    EXPECT_EQ(deque.get(2), Person("Charlie", 35));
+    
+    int totalAge = 0;
+    for (const auto &person : deque)
+    {
+        totalAge += person.getAge();
+    }
+    
+    EXPECT_EQ(totalAge, 90);
+    
+    deque.sort(deque.begin(), deque.end());
+    
+    EXPECT_EQ(deque.get(0), Person("Bob", 25));
+    EXPECT_EQ(deque.get(1), Person("Alice", 30));
+    EXPECT_EQ(deque.get(2), Person("Charlie", 35));
+}
+
+TEST(SegmentedDequeIteratorTest, IteratorFunctionsWork)
+{
+    SegmentedDeque<int> deque(3);
+    for (int i = 0; i < 5; i++)
+    {
+        deque.append(i);
+    }
+    
+    auto it = deque.begin();
+    EXPECT_EQ(*it, 0);
+    
+    ++it;
+    EXPECT_EQ(*it, 1);
+    
+    it++;
+    EXPECT_EQ(*it, 2);
+    
+    auto it2 = deque.begin();
+    ++it2;
+    ++it2;
+    EXPECT_EQ(it, it2);
+    
+    ++it2;
+    EXPECT_NE(it, it2);
+    
+    EXPECT_TRUE(it.notEnd());
+    
+    it = deque.end();
+    EXPECT_FALSE(it.notEnd());
+}
+
+TEST(SegmentedDequeConstIteratorTest, ConstIteratorFunctionsWork)
+{
+    SegmentedDeque<int> deque(3);
+    for (int i = 0; i < 5; i++)
+    {
+        deque.append(i);
+    }
+    
+    const SegmentedDeque<int> &constDeque = deque;
+    
+    auto it = constDeque.cbegin();
+    EXPECT_EQ(*it, 0);
+    
+    ++it;
+    EXPECT_EQ(*it, 1);
+    
+    it++;
+    EXPECT_EQ(*it, 2);
+    
+    auto it2 = constDeque.cbegin();
+    ++it2;
+    ++it2;
+    EXPECT_EQ(it, it2);
+    
+    ++it2;
+    EXPECT_NE(it, it2);
+    
+    EXPECT_TRUE(it.notEnd());
+    
+    it = constDeque.cend();
+    EXPECT_FALSE(it.notEnd());
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iterator>
+
 template <typename T>
 class LinkedList
 {
@@ -13,45 +15,6 @@ private:
     };
     Node *head;
     int length;
-
-public:
-    /// @brief Iterator section
-    class Iterator
-    {
-    public:
-        Node *current;
-
-        Iterator(Node *nodePtr);
-        Iterator &operator++();
-        Iterator operator++(int);
-        T &operator*() const;
-        bool operator!=(const Iterator &other) const;
-        bool operator==(const Iterator &other) const;
-        void insert(const T &item);
-        void erase();
-        bool notEnd() const;
-    };
-
-    /// @brief ConstIterator section
-    class ConstIterator
-    {
-    public:
-        const Node *current;
-
-        ConstIterator(const Node *nodePtr);
-        ConstIterator &operator++();
-        ConstIterator operator++(int);
-        const T &operator*() const;
-        bool operator!=(const ConstIterator &other) const;
-        bool operator==(const ConstIterator &other) const;
-        bool notEnd() const;
-    };
-
-    Iterator begin() { return Iterator(head); };
-    Iterator end() { return Iterator(nullptr); };
-
-    ConstIterator begin() const { return ConstIterator(head); };
-    ConstIterator end() const { return ConstIterator(nullptr); };
 
 public:
     LinkedList();
@@ -83,6 +46,63 @@ public:
     LinkedList<T> *getSubList(const int startIndex, const int endIndex) const;
 
     LinkedList<T> &operator=(const LinkedList<T> &other);
+
+public:
+    class Iterator
+    {
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = T *;
+        using reference = T &;
+
+        Node *current;
+
+        Iterator(Node *nodePtr);
+        Iterator &operator++();
+        Iterator operator++(int);
+        Iterator &operator--();
+        Iterator operator--(int);
+        Iterator(const Iterator &) = default;
+        Iterator &operator=(const Iterator &) = default;
+        T &operator*() const;
+        bool operator!=(const Iterator &other) const;
+        bool operator==(const Iterator &other) const;
+        void insert(const T &item);
+        void erase();
+        bool notEnd() const;
+    };
+    class ConstIterator
+    {
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = const T *;
+        using reference = const T &;
+
+        const Node *current;
+
+        ConstIterator(const Node *nodePtr);
+        ConstIterator &operator++();
+        ConstIterator operator++(int);
+        ConstIterator &operator--();
+        ConstIterator operator--(int);
+        ConstIterator(const Iterator &it);
+        ConstIterator(const ConstIterator &it) = default;
+        ConstIterator &operator=(const ConstIterator &) = default;
+        const T &operator*() const;
+        bool operator!=(const ConstIterator &other) const;
+        bool operator==(const ConstIterator &other) const;
+        bool notEnd() const;
+    };
+
+    Iterator begin() { return Iterator(head); };
+    Iterator end() { return Iterator(nullptr); };
+
+    ConstIterator cbegin() const { return ConstIterator(head); };
+    ConstIterator cend() const { return ConstIterator(nullptr); };
 };
 
 #include "../impl/linkedList.tpp"

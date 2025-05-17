@@ -54,7 +54,7 @@ TEST(LinkedListTest, AssignmentOperatorMakesDeepCopy)
     EXPECT_EQ(copy.get(2), 3);
 
     copy.set(1, 5);
-    EXPECT_EQ(original.get(1), 2); // Original shouldn't change
+    EXPECT_EQ(original.get(1), 2);
 }
 
 TEST(LinkedListTest, SelfAssignmentIsSafe)
@@ -127,23 +127,19 @@ TEST(LinkedListTest, InsertAtHandlesVariousPositions)
 {
     LinkedList<int> list;
 
-    // Insert into empty list
     list.insertAt(1, 0);
     EXPECT_EQ(list.getLength(), 1);
     EXPECT_EQ(list.get(0), 1);
 
-    // Insert at beginning
     list.insertAt(0, 0);
     EXPECT_EQ(list.getLength(), 2);
     EXPECT_EQ(list.get(0), 0);
     EXPECT_EQ(list.get(1), 1);
 
-    // Insert at end
     list.insertAt(3, 2);
     EXPECT_EQ(list.getLength(), 3);
     EXPECT_EQ(list.get(2), 3);
 
-    // Insert in middle
     list.insertAt(2, 1);
     EXPECT_EQ(list.getLength(), 4);
     EXPECT_EQ(list.get(1), 2);
@@ -164,7 +160,6 @@ TEST(LinkedListTest, ClearResetsList)
     EXPECT_EQ(list.getLength(), 0);
     EXPECT_THROW(list.getFirst(), std::out_of_range);
 
-    // Clear empty list
     list.clear();
     EXPECT_EQ(list.getLength(), 0);
 }
@@ -185,13 +180,11 @@ TEST(LinkedListTest, GetSubListReturnsCorrectSubset)
     EXPECT_EQ(subList->get(2), 3);
     delete subList;
 
-    // Single element sublist
     subList = list.getSubList(0, 0);
     EXPECT_EQ(subList->getLength(), 1);
     EXPECT_EQ(subList->get(0), 0);
     delete subList;
 
-    // Invalid ranges
     EXPECT_THROW(list.getSubList(-1, 2), std::out_of_range);
     EXPECT_THROW(list.getSubList(2, 1), std::out_of_range);
     EXPECT_THROW(list.getSubList(3, 5), std::out_of_range);
@@ -214,12 +207,10 @@ TEST(LinkedListTest, ConcatModifiesOriginalList)
     EXPECT_EQ(list1.get(2), 3);
     EXPECT_EQ(list1.get(3), 4);
 
-    // Concat with empty list
     LinkedList<int> empty;
     list1.concat(empty);
     EXPECT_EQ(list1.getLength(), 4);
 
-    // Self-concat should throw
     EXPECT_THROW(list1.concat(list1), std::invalid_argument);
 }
 
@@ -241,13 +232,11 @@ TEST(LinkedListTest, ConcatImmutableCreatesNewList)
     EXPECT_EQ(result->get(2), 3);
     EXPECT_EQ(result->get(3), 4);
 
-    // Original lists unchanged
     EXPECT_EQ(list1.getLength(), 2);
     EXPECT_EQ(list2.getLength(), 2);
 
     delete result;
 
-    // Self-concat should throw
     EXPECT_THROW(list1.concatImmutable(list1), std::invalid_argument);
 }
 
@@ -258,7 +247,6 @@ TEST(LinkedListTest, IteratorOperations)
     list.append(2);
     list.append(3);
 
-    // Prefix increment
     auto it = list.begin();
     EXPECT_EQ(*it, 1);
     ++it;
@@ -268,13 +256,11 @@ TEST(LinkedListTest, IteratorOperations)
     ++it;
     EXPECT_EQ(it, list.end());
 
-    // Postfix increment
     it = list.begin();
     auto old_it = it++;
     EXPECT_EQ(*old_it, 1);
     EXPECT_EQ(*it, 2);
 
-    // NotEnd check
     it = list.begin();
     EXPECT_TRUE(it.notEnd());
     ++it;
@@ -282,7 +268,6 @@ TEST(LinkedListTest, IteratorOperations)
     ++it;
     EXPECT_FALSE(it.notEnd());
     
-    // Test that insert and erase throw exceptions
     it = list.begin();
     EXPECT_THROW(it.insert(5), std::runtime_error);
     EXPECT_THROW(it.erase(), std::runtime_error);
@@ -297,23 +282,21 @@ TEST(LinkedListTest, ConstIteratorOperations)
 
     const LinkedList<int> &constList = list;
 
-    auto it = constList.begin();
+    auto it = constList.cbegin();
     EXPECT_EQ(*it, 1);
     ++it;
     EXPECT_EQ(*it, 2);
     ++it;
     EXPECT_EQ(*it, 3);
     ++it;
-    EXPECT_EQ(it, constList.end());
+    EXPECT_EQ(it, constList.cend());
 
-    // Postfix increment
-    it = constList.begin();
+    it = constList.cbegin();
     auto old_it = it++;
     EXPECT_EQ(*old_it, 1);
     EXPECT_EQ(*it, 2);
 
-    // NotEnd check
-    it = constList.begin();
+    it = constList.cbegin();
     EXPECT_TRUE(it.notEnd());
     ++it;
     ++it;

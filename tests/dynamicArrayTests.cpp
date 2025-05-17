@@ -46,7 +46,7 @@ TEST(DynamicArrayTest, CopyConstructorCreatesIndependentCopy)
     EXPECT_EQ(arr2[1], 2);
 
     arr2[0] = 10;
-    EXPECT_EQ(arr1[0], 1); // Original shouldn't change
+    EXPECT_EQ(arr1[0], 1);
 }
 
 TEST(DynamicArrayTest, AssignmentOperatorMakesDeepCopy)
@@ -60,7 +60,7 @@ TEST(DynamicArrayTest, AssignmentOperatorMakesDeepCopy)
     EXPECT_EQ(arr2.getSize(), 2);
 
     arr2[0] = 10;
-    EXPECT_EQ(arr1[0], 1); // Original shouldn't change
+    EXPECT_EQ(arr1[0], 1);
 }
 
 TEST(DynamicArrayTest, SelfAssignmentIsSafe)
@@ -112,16 +112,13 @@ TEST(DynamicArrayTest, InsertAtHandlesVariousPositions)
     arr.append(1);
     arr.append(3);
 
-    // Insert in middle
     arr.insertAt(2, 1);
     EXPECT_EQ(arr.getSize(), 3);
     EXPECT_EQ(arr[1], 2);
 
-    // Insert at beginning
     arr.insertAt(0, 0);
     EXPECT_EQ(arr[0], 0);
 
-    // Insert at end
     arr.insertAt(4, 4);
     EXPECT_EQ(arr[4], 4);
 }
@@ -280,6 +277,5 @@ TEST(DynamicArrayTest, PrintDoesNotCrash)
     arr.append(1);
     arr.append(2);
 
-    // Just verify it doesn't crash
     arr.print();
 }

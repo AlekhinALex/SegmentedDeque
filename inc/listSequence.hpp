@@ -15,8 +15,8 @@ public:
     Iterator begin() { return list.begin(); }
     Iterator end() { return list.end(); }
 
-    ConstIterator begin() const { return list.begin(); }
-    ConstIterator end() const { return list.end(); }
+    ConstIterator begin() const { return list.cbegin(); }
+    ConstIterator end() const { return list.cend(); }
 
 public:
     ListSequence();

@@ -25,6 +25,24 @@ typename LinkedList<T>::Iterator LinkedList<T>::Iterator::operator++(int)
 }
 
 template <typename T>
+typename LinkedList<T>::Iterator &LinkedList<T>::Iterator::operator--()
+{
+    if (current)
+    {
+        current = current->prev;
+    }
+    return *this;
+}
+
+template <typename T>
+typename LinkedList<T>::Iterator LinkedList<T>::Iterator::operator--(int)
+{
+    Iterator temp = *this;
+    --(*this);
+    return temp;
+}
+
+template <typename T>
 T &LinkedList<T>::Iterator::operator*() const
 {
     if (!current)
@@ -88,6 +106,27 @@ typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator++(i
     ++(*this);
     return temp;
 }
+
+template <typename T>
+typename LinkedList<T>::ConstIterator &LinkedList<T>::ConstIterator::operator--()
+{
+    if (current)
+    {
+        current = current->prev;
+    }
+    return *this;
+}
+
+template <typename T>
+typename LinkedList<T>::ConstIterator LinkedList<T>::ConstIterator::operator--(int)
+{
+    ConstIterator temp = *this;
+    --(*this);
+    return temp;
+}
+
+template <typename T>
+LinkedList<T>::ConstIterator::ConstIterator(const Iterator &it) : current(it.current) {}
 
 template <typename T>
 const T &LinkedList<T>::ConstIterator::operator*() const
@@ -154,7 +193,7 @@ LinkedList<T>::LinkedList(const T *items, const int count) : head(nullptr), leng
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList<T> &list) : head(nullptr), length(0)
 {
-    for (ConstIterator it = list.begin(); it != list.end(); ++it)
+    for (ConstIterator it = list.cbegin(); it != list.cend(); ++it)
     {
         append(*it);
     }
@@ -260,7 +299,7 @@ const T &LinkedList<T>::getLast() const
         throw std::out_of_range("List is empty");
     }
 
-    ConstIterator it = begin();
+    ConstIterator it = cbegin();
     while (it.current->next != nullptr)
     {
         ++it;
@@ -292,7 +331,7 @@ const T &LinkedList<T>::get(const int index) const
         throw std::out_of_range("Index out of range");
     }
 
-    ConstIterator it = begin();
+    ConstIterator it = cbegin();
     for (int i = 0; i < index; i++)
     {
         ++it;
@@ -368,7 +407,7 @@ LinkedList<T> *LinkedList<T>::getSubList(const int startIndex, const int endInde
 
     LinkedList<T> *subList = new LinkedList<T>();
 
-    ConstIterator it = begin();
+    ConstIterator it = cbegin();
     for (int i = 0; i < startIndex; i++)
     {
         ++it;
@@ -398,7 +437,7 @@ void LinkedList<T>::print() const
         return;
     }
 
-    for (ConstIterator it = begin(); it != end(); ++it)
+    for (ConstIterator it = cbegin(); it != cend(); ++it)
     {
         std::cout << *it << " ";
     }
@@ -425,7 +464,7 @@ void LinkedList<T>::concat(const LinkedList<T> &list)
         throw std::invalid_argument("Cannot concatenate with itself");
     }
 
-    for (ConstIterator it = list.begin(); it != list.end(); ++it)
+    for (ConstIterator it = list.cbegin(); it != list.cend(); ++it)
     {
         append(*it);
     }
@@ -441,7 +480,7 @@ LinkedList<T> &LinkedList<T>::operator=(const LinkedList<T> &other)
 
     clear();
 
-    for (ConstIterator it = other.begin(); it != other.end(); ++it)
+    for (ConstIterator it = other.cbegin(); it != other.cend(); ++it)
     {
         append(*it);
     }

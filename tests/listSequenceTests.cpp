@@ -52,7 +52,7 @@ TEST(ListSequenceTest, CopyConstructorCreatesIndependentCopy)
     }
 
     copy.set(0, 10);
-    EXPECT_NE(copy.get(0), original.get(0)); // Verify deep copy
+    EXPECT_NE(copy.get(0), original.get(0));
 }
 
 TEST(ListSequenceTest, AssignmentOperatorMakesDeepCopy)
@@ -70,7 +70,7 @@ TEST(ListSequenceTest, AssignmentOperatorMakesDeepCopy)
     }
 
     target.set(0, 10);
-    EXPECT_NE(target.get(0), source.get(0)); // Verify deep copy
+    EXPECT_NE(target.get(0), source.get(0));
 }
 
 TEST(ListSequenceTest, SelfAssignmentIsSafe)
@@ -83,7 +83,7 @@ TEST(ListSequenceTest, SelfAssignmentIsSafe)
     const auto old_first = seq.get(0);
     const auto old_last = seq.get(1);
 
-    seq = seq; // Self-assignment
+    seq = seq;
 
     EXPECT_EQ(seq.getLength(), old_length);
     EXPECT_EQ(seq.get(0), old_first);
@@ -109,7 +109,6 @@ TEST(ListSequenceTest, AppendIncreasesLengthAndMaintainsOrder)
         EXPECT_EQ(seq.getLength(), i + 1);
         EXPECT_EQ(seq.getLast(), test_values[i]);
 
-        // Verify all previous elements remain unchanged
         for (size_t j = 0; j <= i; ++j)
         {
             EXPECT_EQ(seq.get(j), test_values[j]);
@@ -128,7 +127,6 @@ TEST(ListSequenceTest, PrependAddsToBeginning)
         EXPECT_EQ(seq.getLength(), i + 1);
         EXPECT_EQ(seq.getFirst(), test_values[i]);
 
-        // Verify the rest of sequence
         for (size_t j = 0; j <= i; ++j)
         {
             EXPECT_EQ(seq.get(j), test_values[i - j]);
@@ -140,27 +138,22 @@ TEST(ListSequenceTest, InsertAtHandlesVariousPositions)
 {
     ListSequence<int> seq;
 
-    // Insert into empty sequence
     seq.insertAt(1, 0);
     EXPECT_EQ(seq.getLength(), 1);
     EXPECT_EQ(seq.get(0), 1);
 
-    // Insert at beginning
     seq.insertAt(0, 0);
     EXPECT_EQ(seq.getLength(), 2);
     EXPECT_EQ(seq.get(0), 0);
 
-    // Insert at end
     seq.insertAt(3, 2);
     EXPECT_EQ(seq.getLength(), 3);
     EXPECT_EQ(seq.get(2), 3);
 
-    // Insert in middle
     seq.insertAt(2, 1);
     EXPECT_EQ(seq.getLength(), 4);
     EXPECT_EQ(seq.get(1), 2);
 
-    // Verify full sequence
     EXPECT_EQ(seq.get(0), 0);
     EXPECT_EQ(seq.get(1), 2);
     EXPECT_EQ(seq.get(2), 1);
@@ -239,7 +232,6 @@ TEST(ListSequenceTest, ImmutableOperationsCreateNewSequences)
     original.append(1);
     original.append(2);
 
-    // Test appendImmutable
     Sequence<int> *appended = original.appendImmutable(3);
     ASSERT_NE(appended, nullptr);
     EXPECT_EQ(original.getLength(), 2);
@@ -247,7 +239,6 @@ TEST(ListSequenceTest, ImmutableOperationsCreateNewSequences)
     EXPECT_EQ(appended->get(2), 3);
     delete appended;
 
-    // Test prependImmutable
     Sequence<int> *prepended = original.prependImmutable(0);
     ASSERT_NE(prepended, nullptr);
     EXPECT_EQ(original.getLength(), 2);
@@ -255,7 +246,6 @@ TEST(ListSequenceTest, ImmutableOperationsCreateNewSequences)
     EXPECT_EQ(prepended->get(0), 0);
     delete prepended;
 
-    // Test insertAtImmutable
     Sequence<int> *inserted = original.insertAtImmutable(5, 1);
     ASSERT_NE(inserted, nullptr);
     EXPECT_EQ(original.getLength(), 2);
@@ -263,7 +253,6 @@ TEST(ListSequenceTest, ImmutableOperationsCreateNewSequences)
     EXPECT_EQ(inserted->get(1), 5);
     delete inserted;
 
-    // Test setImmutable
     Sequence<int> *modified = original.setImmutable(0, 10);
     ASSERT_NE(modified, nullptr);
     EXPECT_EQ(original.get(0), 1);
@@ -313,13 +302,11 @@ TEST(ListSequenceTest, PrintOutputIsCorrect)
 {
     ListSequence<int> seq;
 
-    // Test empty sequence
     testing::internal::CaptureStdout();
     seq.print();
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "Empty list");
 
-    // Test non-empty sequence
     seq.append(1);
     seq.append(2);
     seq.append(3);
@@ -329,5 +316,3 @@ TEST(ListSequenceTest, PrintOutputIsCorrect)
     output = testing::internal::GetCapturedStdout();
     EXPECT_EQ(output, "1 2 3 ");
 }
-
-// Удален тест OperatorBracketsProvidesAccess, так как operator[] не реализован в ListSequence
