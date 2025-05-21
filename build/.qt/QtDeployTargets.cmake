@@ -1,4 +1,0 @@
-set(__QT_DEPLOY_TARGET_Models_FILE /Users/alexalekhin/SegmentedDeque/build/libModels.a)
-set(__QT_DEPLOY_TARGET_Models_TYPE STATIC_LIBRARY)
-set(__QT_DEPLOY_TARGET_SegmentedDeque_FILE /Users/alexalekhin/SegmentedDeque/build/SegmentedDeque.app/Contents/MacOS/SegmentedDeque)
-set(__QT_DEPLOY_TARGET_SegmentedDeque_TYPE EXECUTABLE)
