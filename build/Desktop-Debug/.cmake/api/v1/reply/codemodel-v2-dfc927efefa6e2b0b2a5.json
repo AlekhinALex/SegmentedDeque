@@ -1,0 +1,106 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-a8f8ad7459a7f0b27aef.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "SegmentedDeque",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Models::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Models-Debug-dbec42d00b7713a863c6.json",
+					"name" : "Models",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Models_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Models_autogen-Debug-f6389c1b02e9567f78f1.json",
+					"name" : "Models_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Models_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Models_autogen_timestamp_deps-Debug-60a65f615dbedf60e6de.json",
+					"name" : "Models_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SegmentedDeque::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SegmentedDeque-Debug-dae1dbc114c4caec45a9.json",
+					"name" : "SegmentedDeque",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SegmentedDeque_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SegmentedDeque_autogen-Debug-4e3684a30489be3eab09.json",
+					"name" : "SegmentedDeque_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "SegmentedDeque_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-SegmentedDeque_autogen_timestamp_deps-Debug-7d569afa451a273db4eb.json",
+					"name" : "SegmentedDeque_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/alexalekhin/SegmentedDeque/build/Desktop-Debug",
+		"source" : "/Users/alexalekhin/SegmentedDeque"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 8
+	}
+}

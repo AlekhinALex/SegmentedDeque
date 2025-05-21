@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>952</width>
+    <height>623</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sequence Manager</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="mainLayout" stretch="4,4">
+      <item>
+       <layout class="QVBoxLayout" name="sequenceLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QListWidget" name="sequenceListWidget">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addButton">
+          <property name="text">
+           <string>+ Segmented Deque</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteButton">
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="operationLayout">
+        <item row="0" column="0" colspan="2">
+         <widget class="QGroupBox" name="operationsGroupBox">
+          <property name="title">
+           <string>Operations </string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="20" column="0">
+            <widget class="QPushButton" name="concatButton">
+             <property name="text">
+              <string>Concat</string>
+             </property>
+            </widget>
+           </item>
+           <item row="19" column="0">
+            <widget class="QPushButton" name="concatImmutableButton">
+             <property name="text">
+              <string>Concat Immutable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QPushButton" name="appendButton">
+             <property name="text">
+              <string>Append</string>
+             </property>
+            </widget>
+           </item>
+           <item row="13" column="0">
+            <widget class="QPushButton" name="appendImmutableButton">
+             <property name="text">
+              <string>Append Immutable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0">
+            <widget class="QPushButton" name="insertAtImmutableButton">
+             <property name="text">
+              <string>InsertAt Immutable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QPushButton" name="reduceButton">
+             <property name="text">
+              <string>Reduce</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QPushButton" name="setButton">
+             <property name="text">
+              <string>Set</string>
+             </property>
+            </widget>
+           </item>
+           <item row="21" column="0">
+            <widget class="QPushButton" name="showSequenceButton">
+             <property name="text">
+              <string>Show Sequence</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QPushButton" name="insertAtButton">
+             <property name="text">
+              <string>InsertAt</string>
+             </property>
+            </widget>
+           </item>
+           <item row="14" column="0">
+            <widget class="QPushButton" name="prependImmutableButton">
+             <property name="text">
+              <string>Prepend Immutable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="applyButton">
+             <property name="text">
+              <string>Apply</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="0">
+            <widget class="QPushButton" name="getButton">
+             <property name="text">
+              <string>Get</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="sortButton">
+             <property name="text">
+              <string>Sort</string>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QPushButton" name="prependButton">
+             <property name="text">
+              <string>Prepend</string>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="0">
+            <widget class="QPushButton" name="setImmutableButton">
+             <property name="text">
+              <string>Set Immutable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QPushButton" name="searchSubsequenceButton">
+             <property name="text">
+              <string>Search Subsequence</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="whereButton">
+             <property name="text">
+              <string>Where</string>
+             </property>
+            </widget>
+           </item>
+           <item row="18" column="0">
+            <widget class="QPushButton" name="sortImmutableButton">
+             <property name="text">
+              <string>Sort Immutable</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="logTextEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

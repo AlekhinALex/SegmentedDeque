@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>1000</width><height>750</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sequence Manager</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+
+<property name="styleSheet">
+ <string>
+  QWidget {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11pt;
+  }
+  QPushButton {
+    background-color: #2b2b72;
+    border: 1px solid #5a5a99;
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: #dbe1ff;
+    font-weight: 600;
+  }
+  QPushButton:hover {
+    background-color: #4a4aa5;
+    border-color: #7a7adb;
+  }
+  QPushButton:pressed {
+    background-color: #1e1e60;
+    border-color: #555599;
+  }
+  QListWidget {
+    background-color: #1e1e2f;
+    border: 1px solid #444466;
+    selection-background-color: #5566ff;
+    selection-color: #fff;
+    font-weight: 500;
+  }
+  QTabWidget::pane {
+    border: 1px solid #444466;
+    background: #1e1e2f;
+    border-radius: 6px;
+  }
+  QTabBar::tab {
+    background: #2a2a6a;
+    color: #cfcfff;
+    padding: 10px 18px;
+    border: 1px solid #555588;
+    border-bottom: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin-right: 3px;
+    font-weight: 600;
+  }
+  QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #5566ff;
+    color: #fff;
+    border-color: #7a7adb;
+  }
+  QTextEdit {
+    background-color: #1e1e2f;
+    border: 1px solid #444466;
+    color: #e0e0e0;
+    font-family: Consolas, monospace;
+    font-size: 10pt;
+    border-radius: 6px;
+  }
+  QLabel#sequencesLabel {
+    font-size: 14pt;
+    font-weight: 700;
+    color: #8899ff;
+    margin-bottom: 6px;
+  }
+ </string>
+</property>
+
+
+   <layout class="QVBoxLayout" name="mainLayout">
+    <item>
+     <layout class="QHBoxLayout" name="contentLayout">
+      <item>
+       <layout class="QVBoxLayout" name="sequenceLayout">
+        <item>
+         <widget class="QLabel" name="sequencesLabel">
+          <property name="text"><string>Sequences</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="sequenceListWidget"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="addButton">
+          <property name="text"><string>+ Segmented Deque</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteButton">
+          <property name="text"><string>Delete</string></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="showSequenceButton">
+          <property name="text"><string>Show Sequence</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+
+      <item>
+       <widget class="QTabWidget" name="operationsTabs">
+        <property name="currentIndex"><number>0</number></property>
+
+        <!-- Вкладка 1: Основные -->
+        <widget class="QWidget" name="basicTab">
+         <attribute name="title"><string>Основные</string></attribute>
+         <layout class="QVBoxLayout" name="basicLayout">
+          <item><widget class="QPushButton" name="appendButton"><property name="text"><string>Append</string></property></widget></item>
+          <item><widget class="QPushButton" name="prependButton"><property name="text"><string>Prepend</string></property></widget></item>
+          <item><widget class="QPushButton" name="insertAtButton"><property name="text"><string>InsertAt</string></property></widget></item>
+          <item><widget class="QPushButton" name="setButton"><property name="text"><string>Set</string></property></widget></item>
+          <item><widget class="QPushButton" name="getButton"><property name="text"><string>Get</string></property></widget></item>
+         </layout>
+        </widget>
+
+        <!-- Вкладка 2: Иммутабельные -->
+        <widget class="QWidget" name="immutableTab">
+         <attribute name="title"><string>Иммутабельные</string></attribute>
+         <layout class="QVBoxLayout" name="immutableLayout">
+          <item><widget class="QPushButton" name="appendImmutableButton"><property name="text"><string>Append Immutable</string></property></widget></item>
+          <item><widget class="QPushButton" name="prependImmutableButton"><property name="text"><string>Prepend Immutable</string></property></widget></item>
+          <item><widget class="QPushButton" name="insertAtImmutableButton"><property name="text"><string>InsertAt Immutable</string></property></widget></item>
+          <item><widget class="QPushButton" name="setImmutableButton"><property name="text"><string>Set Immutable</string></property></widget></item>
+          <item><widget class="QPushButton" name="concatImmutableButton"><property name="text"><string>Concat Immutable</string></property></widget></item>
+          <item><widget class="QPushButton" name="sortImmutableButton"><property name="text"><string>Sort Immutable</string></property></widget></item>
+         </layout>
+        </widget>
+
+        <!-- Вкладка 3: Анализ -->
+        <widget class="QWidget" name="analysisTab">
+         <attribute name="title"><string>Анализ</string></attribute>
+         <layout class="QVBoxLayout" name="analysisLayout">
+          <item><widget class="QPushButton" name="whereButton"><property name="text"><string>Where</string></property></widget></item>
+          <item><widget class="QPushButton" name="applyButton"><property name="text"><string>Apply</string></property></widget></item>
+          <item><widget class="QPushButton" name="reduceButton"><property name="text"><string>Reduce</string></property></widget></item>
+          <item><widget class="QPushButton" name="searchSubsequenceButton"><property name="text"><string>Search Subsequence</string></property></widget></item>
+         </layout>
+        </widget>
+
+        <!-- Вкладка 4: Сортировка и конкатенация -->
+        <widget class="QWidget" name="sortingTab">
+         <attribute name="title"><string>Сортировка/Concat</string></attribute>
+         <layout class="QVBoxLayout" name="sortingLayout">
+          <item><widget class="QPushButton" name="concatButton"><property name="text"><string>Concat</string></property></widget></item>
+          <item><widget class="QPushButton" name="sortButton"><property name="text"><string>Sort</string></property></widget></item>
+         </layout>
+        </widget>
+
+       </widget>
+      </item>
+     </layout>
+    </item>
+
+    <!-- Лог -->
+    <item>
+     <widget class="QTextEdit" name="logTextEdit">
+      <property name="readOnly"><bool>true</bool></property>
+      <property name="placeholderText"><string>Operation log...</string></property>
+     </widget>
+    </item>
+
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
