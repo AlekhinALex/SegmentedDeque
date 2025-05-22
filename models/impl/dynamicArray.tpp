@@ -118,12 +118,10 @@ void DynamicArray<T>::append(const T &item)
     {
         int newCapacity = capacity == 0 ? 1 : capacity * 2;
         T *newData = new T[newCapacity];
-        // Копируем существующие элементы
         for (int i = 0; i < size; ++i)
         {
             newData[i] = data[i];
         }
-        // Инициализируем новые элементы значением по умолчанию
         for (int i = size; i < newCapacity; ++i)
         {
             newData[i] = T();
@@ -141,12 +139,11 @@ void DynamicArray<T>::prepend(const T &item)
 {
     if (size >= capacity)
     {
-        // Увеличиваем емкость, но не size
         int newCapacity = capacity == 0 ? 1 : capacity * 2;
         T *newData = new T[newCapacity];
         for (int i = 0; i < size; ++i)
         {
-            newData[i + 1] = data[i]; // Сдвигаем элементы вправо
+            newData[i + 1] = data[i];
         }
         delete[] data;
         data = newData;
@@ -154,7 +151,6 @@ void DynamicArray<T>::prepend(const T &item)
     }
     else
     {
-        // Сдвигаем элементы вправо
         for (int i = size; i > 0; i--)
         {
             data[i] = data[i - 1];

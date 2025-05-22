@@ -163,7 +163,7 @@ void MainWindow::onAppendButtonClicked()
         {
             QString value = dialog.getValue();
             if (value.isEmpty())
-                return; // Ошибка уже показана в диалоге
+                return;
             controller->appendToSequence(item->text().toStdString(), value);
             logAction(QString("Appended value to %1").arg(item->text()));
         }
@@ -187,7 +187,7 @@ void MainWindow::onPrependButtonClicked()
         {
             QString value = dialog.getValue();
             if (value.isEmpty())
-                return; // Ошибка уже показана в диалоге
+                return;
             controller->prependToSequence(item->text().toStdString(), value);
             logAction(QString("Prepended value to %1").arg(item->text()));
         }
@@ -212,8 +212,7 @@ void MainWindow::onInsertAtButtonClicked()
             int index = dialog.getIndex();
             QString value = dialog.getValue();
             if (index < 0 || value.isEmpty())
-                return; // Ошибки уже показаны в диалоге
-
+                return;
             int length = controller->getSequenceLength(item->text().toStdString());
             if (index > length)
             {
@@ -245,7 +244,7 @@ void MainWindow::onSetButtonClicked()
             int index = dialog.getIndex();
             QString value = dialog.getValue();
             if (index < 0 || value.isEmpty())
-                return; // Ошибки уже показаны в диалоге
+                return;
 
             int length = controller->getSequenceLength(item->text().toStdString());
             if (index >= length)
@@ -277,7 +276,7 @@ void MainWindow::onGetButtonClicked()
         {
             int index = dialog.getIndex();
             if (index < 0)
-                return; // Ошибка уже показана в диалоге
+                return;
 
             int length = controller->getSequenceLength(item->text().toStdString());
             if (index >= length)
@@ -373,7 +372,7 @@ void MainWindow::appendImmutable()
             QString newName = generateCopyName(originalName);
             QString value = dialog.getValue();
             if (value.isEmpty())
-                return; // Ошибка уже показана в диалоге
+                return;
             controller->appendToImmutableSequence(originalName.toStdString(), value, newName.toStdString());
             logAction(QString("Immutable Append: created %1 from %2").arg(newName, originalName));
         }
@@ -399,7 +398,7 @@ void MainWindow::prependImmutable()
             QString newName = generateCopyName(originalName);
             QString value = dialog.getValue();
             if (value.isEmpty())
-                return; // Ошибка уже показана в диалоге
+                return;
             controller->prependToImmutableSequence(originalName.toStdString(), value, newName.toStdString());
             logAction(QString("Immutable Prepend: created %1 from %2").arg(newName, originalName));
         }
@@ -424,7 +423,7 @@ void MainWindow::insertAtImmutable()
             int index = dialog.getIndex();
             QString value = dialog.getValue();
             if (index < 0 || value.isEmpty())
-                return; // Ошибки уже показаны в диалоге
+                return;
 
             QString originalName = item->text();
             QString newName = generateCopyName(originalName);
@@ -452,7 +451,7 @@ void MainWindow::setImmutable()
             int index = dialog.getIndex();
             QString value = dialog.getValue();
             if (index < 0 || value.isEmpty())
-                return; // Ошибки уже показаны в диалоге
+                return;
 
             QString originalName = item->text();
             QString newName = generateCopyName(originalName);
@@ -518,7 +517,7 @@ void MainWindow::sortImmutable()
             throw std::runtime_error("No deque selected");
 
         QString newName = generateCopyName(item->text());
-        controller->sortImmutableSequence(item->text().toStdString(), newName.toStdString()); // TODO Ascending or not has to be added
+        controller->sortImmutableSequence(item->text().toStdString(), newName.toStdString());
         logAction(QString("Immutable Sort: created %1 from %2").arg(newName, item->text()));
     }
     catch (const std::exception &e)
@@ -577,33 +576,34 @@ void MainWindow::onWhereButtonClicked()
 
         QStringList conditions;
         QString name = item->text();
-        
+
         MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
         QString type;
-        
-        switch (valueType) {
-            case MainController::ValueType::Int:
-                type = "int";
-                conditions = {"positive", "even", "greater_ten"};
-                break;
-            case MainController::ValueType::Double:
-                type = "double";
-                conditions = {"positive", "greater_one", "less_five"};
-                break;
-            case MainController::ValueType::String:
-                type = "string";
-                conditions = {"non_empty", "starts_with_a", "longer_than_five"};
-                break;
-            case MainController::ValueType::Person:
-                type = "person";
-                conditions = {"adult", "senior"};
-                break;
-            case MainController::ValueType::Complex:
-                type = "complex";
-                conditions = {"non_zero", "real_positive"};
-                break;
-            default:
-                throw std::runtime_error("Unknown deque type");
+
+        switch (valueType)
+        {
+        case MainController::ValueType::Int:
+            type = "int";
+            conditions = {"positive", "even", "greater_ten"};
+            break;
+        case MainController::ValueType::Double:
+            type = "double";
+            conditions = {"positive", "greater_one", "less_five"};
+            break;
+        case MainController::ValueType::String:
+            type = "string";
+            conditions = {"non_empty", "starts_with_a", "longer_than_five"};
+            break;
+        case MainController::ValueType::Person:
+            type = "person";
+            conditions = {"adult", "senior"};
+            break;
+        case MainController::ValueType::Complex:
+            type = "complex";
+            conditions = {"non_zero", "real_positive"};
+            break;
+        default:
+            throw std::runtime_error("Unknown deque type");
         }
 
         bool ok;
@@ -630,15 +630,27 @@ void MainWindow::onReduceButtonClicked()
 
         QString name = item->text();
         MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
-        
+
         QString type;
-        switch (valueType) {
-            case MainController::ValueType::Int: type = "int"; break;
-            case MainController::ValueType::Double: type = "double"; break;
-            case MainController::ValueType::String: type = "string"; break;
-            case MainController::ValueType::Person: type = "person"; break;
-            case MainController::ValueType::Complex: type = "complex"; break;
-            default: throw std::runtime_error("Unknown deque type");
+        switch (valueType)
+        {
+        case MainController::ValueType::Int:
+            type = "int";
+            break;
+        case MainController::ValueType::Double:
+            type = "double";
+            break;
+        case MainController::ValueType::String:
+            type = "string";
+            break;
+        case MainController::ValueType::Person:
+            type = "person";
+            break;
+        case MainController::ValueType::Complex:
+            type = "complex";
+            break;
+        default:
+            throw std::runtime_error("Unknown deque type");
         }
 
         OperationDialog dialog(this, false, type);
@@ -647,7 +659,7 @@ void MainWindow::onReduceButtonClicked()
         {
             QString initialValue = dialog.getValue();
             if (initialValue.isEmpty())
-                return; // Ошибка уже показана в диалоге
+                return;
 
             QVariant result = controller->reduceSequence(item->text().toStdString(), initialValue);
             showSequenceDialog(QString("Reduce Result for %1:\n%2").arg(item->text(), result.toString()));
@@ -670,24 +682,25 @@ void MainWindow::onApplyButtonClicked()
 
         QString name = item->text();
         MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
-        
+
         QStringList operations;
-        switch (valueType) {
-            case MainController::ValueType::Int:
-            case MainController::ValueType::Double:
-                operations = {"square", "increment", "negate"};
-                break;
-            case MainController::ValueType::String:
-                operations = {"to_upper", "add_exclamation"};
-                break;
-            case MainController::ValueType::Person:
-                operations = {"increment_age", "add_prefix"};
-                break;
-            case MainController::ValueType::Complex:
-                operations = {"conjugate", "square_magnitude"};
-                break;
-            default:
-                throw std::runtime_error("Apply operation not supported for this type");
+        switch (valueType)
+        {
+        case MainController::ValueType::Int:
+        case MainController::ValueType::Double:
+            operations = {"square", "increment", "negate"};
+            break;
+        case MainController::ValueType::String:
+            operations = {"to_upper", "add_exclamation"};
+            break;
+        case MainController::ValueType::Person:
+            operations = {"increment_age", "add_prefix"};
+            break;
+        case MainController::ValueType::Complex:
+            operations = {"conjugate", "square_magnitude"};
+            break;
+        default:
+            throw std::runtime_error("Apply operation not supported for this type");
         }
 
         bool ok;
@@ -730,7 +743,6 @@ void MainWindow::onSearchSubsequenceButtonClicked()
         if (stringValues.isEmpty())
             return;
 
-        // Convert QStringList to QVariantList
         QVariantList values;
         for (const QString &value : stringValues)
         {

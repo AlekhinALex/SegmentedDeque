@@ -168,7 +168,6 @@ void SegmentedDeque<T>::prepend(const T &item)
         segments->prepend(newSegment);
         totalSize++;
 
-        // Rebalance segments if needed
         rebalanceSegments();
         return;
     }
@@ -180,37 +179,30 @@ void SegmentedDeque<T>::prepend(const T &item)
 template <typename T>
 void SegmentedDeque<T>::rebalanceSegments()
 {
-    // Only rebalance if we have more than one segment
     if (segments->getLength() <= 1)
         return;
 
-    // Ensure all segments except possibly the last one are optimally filled
     for (int i = 0; i < segments->getLength() - 1; i++)
     {
         ArraySequence<T> *currentSegment = segments->get(i);
         ArraySequence<T> *nextSegment = segments->get(i + 1);
 
-        // If current segment is not full and next segment has elements
         while (currentSegment->getLength() < segmentSize && nextSegment->getLength() > 0)
         {
-            // Move one element from next segment to current segment
             currentSegment->append(nextSegment->getFirst());
 
-            // Create a new segment without the first element
             ArraySequence<T> *tempSegment = new ArraySequence<T>();
             for (int j = 1; j < nextSegment->getLength(); j++)
             {
                 tempSegment->append(nextSegment->get(j));
             }
 
-            // Replace the next segment with the new one
             delete nextSegment;
             segments->set(i + 1, tempSegment);
             nextSegment = tempSegment;
         }
     }
 
-    // Create a new list of segments without empty ones
     ListSequence<ArraySequence<T> *> *newSegments = new ListSequence<ArraySequence<T> *>();
 
     for (int i = 0; i < segments->getLength(); i++)
@@ -222,11 +214,10 @@ void SegmentedDeque<T>::rebalanceSegments()
         }
         else
         {
-            delete segment; // Delete empty segments
+            delete segment;
         }
     }
 
-    // Replace the old segments list with the new one
     delete segments;
     segments = newSegments;
 }
@@ -499,11 +490,10 @@ void SegmentedDeque<T>::mergeSort(int left, int right, Compare compare)
         buffer[i] = this->get(left + i);
     }
 
-    int i = 0;              // Index for left part of buffer
-    int j = mid - left + 1; // Index for right part of buffer
-    int k = left;           // Index in the original sequence
+    int i = 0;
+    int j = mid - left + 1;
+    int k = left;
 
-    // Fix the loop condition to properly handle the right part
     while (i <= mid - left && j < buffer.size())
     {
         if (compare(buffer[i], buffer[j]))
@@ -516,13 +506,11 @@ void SegmentedDeque<T>::mergeSort(int left, int right, Compare compare)
         }
     }
 
-    // Copy remaining elements from left part
     while (i <= mid - left)
     {
         this->set(k++, buffer[i++]);
     }
 
-    // Copy remaining elements from right part
     while (j < buffer.size())
     {
         this->set(k++, buffer[j++]);
