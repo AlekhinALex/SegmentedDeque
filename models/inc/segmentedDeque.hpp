@@ -32,6 +32,8 @@ public:
     void concat(const Sequence<T> *other) override;
 
     int getLength() const override;
+    int getSegmentSize() const;
+    void rebalanceSegments();
 
     Sequence<T> *getSubsequence(const int startIndex, const int endIndex) const override;
     Sequence<T> *appendImmutable(const T &item) const override;

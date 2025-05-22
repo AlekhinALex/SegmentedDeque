@@ -518,7 +518,7 @@ void MainWindow::sortImmutable()
             throw std::runtime_error("No deque selected");
 
         QString newName = generateCopyName(item->text());
-        controller->sortImmutableSequence(item->text().toStdString(), newName.toStdString()); //TODO Ascending or not has to be added
+        controller->sortImmutableSequence(item->text().toStdString(), newName.toStdString()); // TODO Ascending or not has to be added
         logAction(QString("Immutable Sort: created %1 from %2").arg(newName, item->text()));
     }
     catch (const std::exception &e)
@@ -529,11 +529,16 @@ void MainWindow::sortImmutable()
 
 MainController::ValueType MainWindow::stringToValueType(const QString &typeStr)
 {
-    if (typeStr == "int") return MainController::ValueType::Int;
-    if (typeStr == "double") return MainController::ValueType::Double;
-    if (typeStr == "string") return MainController::ValueType::String;
-    if (typeStr == "person") return MainController::ValueType::Person;
-    if (typeStr == "complex") return MainController::ValueType::Complex;
+    if (typeStr == "int")
+        return MainController::ValueType::Int;
+    if (typeStr == "double")
+        return MainController::ValueType::Double;
+    if (typeStr == "string")
+        return MainController::ValueType::String;
+    if (typeStr == "person")
+        return MainController::ValueType::Person;
+    if (typeStr == "complex")
+        return MainController::ValueType::Complex;
     throw std::invalid_argument("Unknown type string");
 }
 
@@ -551,7 +556,8 @@ void MainWindow::onSortButtonClicked()
             throw std::runtime_error("No deque selected");
 
         bool ascending = QInputDialog::getItem(this, "Sort Direction", "Choose sort direction:",
-                                               QStringList{"Ascending", "Descending"}, 0, false).toLower() == "ascending";
+                                               QStringList{"Ascending", "Descending"}, 0, false)
+                             .toLower() == "ascending";
         controller->sortSequence(item->text().toStdString(), ascending);
         logAction(QString("Sorted deque %1 (%2)").arg(item->text()).arg(ascending ? "ascending" : "descending"));
     }
@@ -570,13 +576,35 @@ void MainWindow::onWhereButtonClicked()
             throw std::runtime_error("No deque selected");
 
         QStringList conditions;
-        QString type = item->text().split("_").last();
-        if (type == "int") conditions = {"positive", "even"};
-        else if (type == "double") conditions = {"positive", "greater_one"};
-        else if (type == "string") conditions = {"non_empty"};
-        else if (type == "person") conditions = {"adult"};
-        else if (type == "complex") conditions = {"non_zero"};
-        else throw std::runtime_error("Unknown deque type");
+        QString name = item->text();
+        
+        MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
+        QString type;
+        
+        switch (valueType) {
+            case MainController::ValueType::Int:
+                type = "int";
+                conditions = {"positive", "even", "greater_ten"};
+                break;
+            case MainController::ValueType::Double:
+                type = "double";
+                conditions = {"positive", "greater_one", "less_five"};
+                break;
+            case MainController::ValueType::String:
+                type = "string";
+                conditions = {"non_empty", "starts_with_a", "longer_than_five"};
+                break;
+            case MainController::ValueType::Person:
+                type = "person";
+                conditions = {"adult", "senior"};
+                break;
+            case MainController::ValueType::Complex:
+                type = "complex";
+                conditions = {"non_zero", "real_positive"};
+                break;
+            default:
+                throw std::runtime_error("Unknown deque type");
+        }
 
         bool ok;
         QString condition = QInputDialog::getItem(this, "Where Condition", "Choose condition:", conditions, 0, false, &ok);
@@ -592,7 +620,6 @@ void MainWindow::onWhereButtonClicked()
         onErrorOccurred(QString("Where error: %1").arg(e.what()));
     }
 }
-
 void MainWindow::onReduceButtonClicked()
 {
     try
@@ -601,7 +628,20 @@ void MainWindow::onReduceButtonClicked()
         if (!item)
             throw std::runtime_error("No deque selected");
 
-        OperationDialog dialog(this, false, item->text().split("_").last());
+        QString name = item->text();
+        MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
+        
+        QString type;
+        switch (valueType) {
+            case MainController::ValueType::Int: type = "int"; break;
+            case MainController::ValueType::Double: type = "double"; break;
+            case MainController::ValueType::String: type = "string"; break;
+            case MainController::ValueType::Person: type = "person"; break;
+            case MainController::ValueType::Complex: type = "complex"; break;
+            default: throw std::runtime_error("Unknown deque type");
+        }
+
+        OperationDialog dialog(this, false, type);
         dialog.setWindowTitle("Enter Initial Value for Reduce");
         if (dialog.exec() == QDialog::Accepted)
         {
@@ -628,10 +668,27 @@ void MainWindow::onApplyButtonClicked()
         if (!item)
             throw std::runtime_error("No deque selected");
 
-        QStringList operations = item->text().split("_").last() == "int" || item->text().split("_").last() == "double" ?
-                                QStringList{"square", "increment"} : QStringList{};
-        if (operations.isEmpty())
-            throw std::runtime_error("Apply operation not supported for this type");
+        QString name = item->text();
+        MainController::ValueType valueType = controller->getSequenceValueType(name.toStdString());
+        
+        QStringList operations;
+        switch (valueType) {
+            case MainController::ValueType::Int:
+            case MainController::ValueType::Double:
+                operations = {"square", "increment", "negate"};
+                break;
+            case MainController::ValueType::String:
+                operations = {"to_upper", "add_exclamation"};
+                break;
+            case MainController::ValueType::Person:
+                operations = {"increment_age", "add_prefix"};
+                break;
+            case MainController::ValueType::Complex:
+                operations = {"conjugate", "square_magnitude"};
+                break;
+            default:
+                throw std::runtime_error("Apply operation not supported for this type");
+        }
 
         bool ok;
         QString operation = QInputDialog::getItem(this, "Apply Operation", "Choose operation:", operations, 0, false, &ok);
@@ -675,7 +732,7 @@ void MainWindow::onSearchSubsequenceButtonClicked()
 
         // Convert QStringList to QVariantList
         QVariantList values;
-        for (const QString& value : stringValues)
+        for (const QString &value : stringValues)
         {
             values.append(QVariant(value));
         }

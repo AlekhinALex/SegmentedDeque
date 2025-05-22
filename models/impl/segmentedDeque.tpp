@@ -155,7 +155,7 @@ void SegmentedDeque<T>::prepend(const T &item)
     if (segments->getLength() == 0)
     {
         ArraySequence<T> *newSegment = new ArraySequence<T>();
-        newSegment->prepend(item); // Используем prepend вместо append
+        newSegment->append(item);
         segments->append(newSegment);
         totalSize++;
         return;
@@ -164,14 +164,71 @@ void SegmentedDeque<T>::prepend(const T &item)
     if (segments->getFirst()->getLength() == segmentSize)
     {
         ArraySequence<T> *newSegment = new ArraySequence<T>();
-        newSegment->prepend(item); // Используем prepend вместо append
+        newSegment->append(item);
         segments->prepend(newSegment);
         totalSize++;
+
+        // Rebalance segments if needed
+        rebalanceSegments();
         return;
     }
 
     segments->getFirst()->prepend(item);
     totalSize++;
+}
+
+template <typename T>
+void SegmentedDeque<T>::rebalanceSegments()
+{
+    // Only rebalance if we have more than one segment
+    if (segments->getLength() <= 1)
+        return;
+
+    // Ensure all segments except possibly the last one are optimally filled
+    for (int i = 0; i < segments->getLength() - 1; i++)
+    {
+        ArraySequence<T> *currentSegment = segments->get(i);
+        ArraySequence<T> *nextSegment = segments->get(i + 1);
+
+        // If current segment is not full and next segment has elements
+        while (currentSegment->getLength() < segmentSize && nextSegment->getLength() > 0)
+        {
+            // Move one element from next segment to current segment
+            currentSegment->append(nextSegment->getFirst());
+
+            // Create a new segment without the first element
+            ArraySequence<T> *tempSegment = new ArraySequence<T>();
+            for (int j = 1; j < nextSegment->getLength(); j++)
+            {
+                tempSegment->append(nextSegment->get(j));
+            }
+
+            // Replace the next segment with the new one
+            delete nextSegment;
+            segments->set(i + 1, tempSegment);
+            nextSegment = tempSegment;
+        }
+    }
+
+    // Create a new list of segments without empty ones
+    ListSequence<ArraySequence<T> *> *newSegments = new ListSequence<ArraySequence<T> *>();
+
+    for (int i = 0; i < segments->getLength(); i++)
+    {
+        ArraySequence<T> *segment = segments->get(i);
+        if (segment->getLength() > 0)
+        {
+            newSegments->append(segment);
+        }
+        else
+        {
+            delete segment; // Delete empty segments
+        }
+    }
+
+    // Replace the old segments list with the new one
+    delete segments;
+    segments = newSegments;
 }
 
 template <typename T>
@@ -242,6 +299,12 @@ template <typename T>
 int SegmentedDeque<T>::getLength() const
 {
     return totalSize;
+}
+
+template <typename T>
+int SegmentedDeque<T>::getSegmentSize() const
+{
+    return segmentSize;
 }
 
 template <typename T>
@@ -433,13 +496,14 @@ void SegmentedDeque<T>::mergeSort(int left, int right, Compare compare)
     std::vector<T> buffer(right - left + 1);
     for (int i = 0; i < buffer.size(); ++i)
     {
-        buffer[i] = this->get(left + i); // Корректное получение элементов
+        buffer[i] = this->get(left + i);
     }
 
-    int i = 0;              // Индекс в буфере для левой части
-    int j = mid - left + 1; // Индекс в буфере для правой части
-    int k = left;           // Глобальный индекс для записи
+    int i = 0;              // Index for left part of buffer
+    int j = mid - left + 1; // Index for right part of buffer
+    int k = left;           // Index in the original sequence
 
+    // Fix the loop condition to properly handle the right part
     while (i <= mid - left && j < buffer.size())
     {
         if (compare(buffer[i], buffer[j]))
@@ -452,10 +516,13 @@ void SegmentedDeque<T>::mergeSort(int left, int right, Compare compare)
         }
     }
 
+    // Copy remaining elements from left part
     while (i <= mid - left)
     {
         this->set(k++, buffer[i++]);
     }
+
+    // Copy remaining elements from right part
     while (j < buffer.size())
     {
         this->set(k++, buffer[j++]);
@@ -506,9 +573,12 @@ SegmentedDeque<T>::Iterator::Iterator(SegmentedDeque<T> *deque, const int index)
 template <typename T>
 T &SegmentedDeque<T>::Iterator::operator*()
 {
+    if (index < 0 || index >= deque->getLength())
+    {
+        throw std::out_of_range("Iterator out of range");
+    }
     return deque->get(index);
 }
-
 template <typename T>
 typename SegmentedDeque<T>::Iterator &SegmentedDeque<T>::Iterator::operator++()
 {

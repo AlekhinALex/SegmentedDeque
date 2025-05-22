@@ -76,7 +76,8 @@ private:
             std::unique_ptr<SegmentedDeque<double>>,
             std::unique_ptr<SegmentedDeque<std::string>>,
             std::unique_ptr<SegmentedDeque<Person>>,
-            std::unique_ptr<SegmentedDeque<Complex>>> sequence;
+            std::unique_ptr<SegmentedDeque<Complex>>>
+            sequence;
     };
 
     std::unordered_map<std::string, SequenceData> sequences;
