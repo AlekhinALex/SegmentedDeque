@@ -56,16 +56,21 @@ public:
         return magnitude() < other.magnitude();
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const Complex &c)
+    bool operator>(const Complex &other) const
     {
-        if (c.imag >= 0)
-        {
-            os << c.real << "+" << c.imag << "i";
-        }
-        else
-        {
-            os << c.real << c.imag << "i";
-        }
-        return os;
+        return magnitude() > other.magnitude();
     }
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Complex &c)
+{
+    if (c.getImag() >= 0)
+    {
+        os << c.getReal() << "+" << c.getImag() << "i";
+    }
+    else
+    {
+        os << c.getReal() << c.getImag() << "i";
+    }
+    return os;
+}

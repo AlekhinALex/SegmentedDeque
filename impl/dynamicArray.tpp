@@ -116,13 +116,22 @@ void DynamicArray<T>::append(const T &item)
 {
     if (size >= capacity)
     {
-        resize(size + 1);
+        int newCapacity = capacity == 0 ? 1 : capacity * 2;
+        T *newData = new T[newCapacity];
+        for (int i = 0; i < size; ++i)
+        {
+            newData[i] = data[i];
+        }
+        for (int i = size; i < newCapacity; ++i)
+        {
+            newData[i] = T();
+        }
+        delete[] data;
+        data = newData;
+        capacity = newCapacity;
     }
-    else
-    {
-        size++;
-    }
-    data[size - 1] = item;
+    data[size] = item;
+    size++;
 }
 
 template <class T>
@@ -130,19 +139,26 @@ void DynamicArray<T>::prepend(const T &item)
 {
     if (size >= capacity)
     {
-        resize(size + 1);
+        int newCapacity = capacity == 0 ? 1 : capacity * 2;
+        T *newData = new T[newCapacity];
+        for (int i = 0; i < size; ++i)
+        {
+            newData[i + 1] = data[i];
+        }
+        delete[] data;
+        data = newData;
+        capacity = newCapacity;
     }
     else
     {
-        size++;
-    }
-
-    for (int i = size - 1; i > 0; i--)
-    {
-        data[i] = data[i - 1];
+        for (int i = size; i > 0; i--)
+        {
+            data[i] = data[i - 1];
+        }
     }
 
     data[0] = item;
+    size++;
 }
 
 template <typename T>
@@ -210,10 +226,13 @@ void DynamicArray<T>::resize(const int newSize)
         }
 
         T *newData = new T[newCapacity];
-
         for (int i = 0; i < size; ++i)
         {
             newData[i] = data[i];
+        }
+        for (int i = size; i < newSize; ++i)
+        {
+            newData[i] = T();
         }
 
         delete[] data;

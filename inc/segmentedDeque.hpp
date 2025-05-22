@@ -32,6 +32,8 @@ public:
     void concat(const Sequence<T> *other) override;
 
     int getLength() const override;
+    int getSegmentSize() const;
+    void rebalanceSegments();
 
     Sequence<T> *getSubsequence(const int startIndex, const int endIndex) const override;
     Sequence<T> *appendImmutable(const T &item) const override;
@@ -47,8 +49,14 @@ public:
     template <class RandomIt>
     void sort(RandomIt first, RandomIt last);
 
+    template <class RandomIt>
+    SegmentedDeque<T> *sortImmutable(RandomIt first, RandomIt last);
+
     template <class RandomIt, class Compare>
     void sort(RandomIt first, RandomIt last, Compare compare);
+
+    template <class RandomIt, class Compare>
+    SegmentedDeque<T> *sortImmutable(RandomIt first, RandomIt last, Compare compare);
 
     template <class Compare>
     void mergeSort(int left, int right, Compare compare);

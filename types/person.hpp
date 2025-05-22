@@ -33,9 +33,14 @@ public:
         return age < other.age;
     }
 
-    friend std::ostream &operator<<(std::ostream &os, const Person &p)
+    bool operator>(const Person &other) const
     {
-        os << p.name << " (" << p.age << ")";
-        return os;
+        return age > other.age;
     }
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Person &p)
+{
+    os << p.getName() << " (" << p.getAge() << ")";
+    return os;
+}
